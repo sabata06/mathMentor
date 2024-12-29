@@ -19,14 +19,13 @@ class Student(models.Model):
     last_lesson_date = models.DateField(blank=True, null=True)  # Son ders tarihi
     created_at = models.DateTimeField(auto_now_add=True)  # Kayıt tarihi
 
+    @property
     def assignment_completion_percentage(self):
         total_assignments = self.assignments.count()
         completed_assignments = self.assignments.filter(is_completed=True).count()
         if total_assignments == 0:
             return 0
         return (completed_assignments / total_assignments) * 100
-
-
 
     def __str__(self):
         return f"{self.name} {self.surname}"
