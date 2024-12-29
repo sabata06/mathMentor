@@ -19,5 +19,27 @@ class Student(models.Model):
     last_lesson_date = models.DateField(blank=True, null=True)  # Son ders tarihi
     created_at = models.DateTimeField(auto_now_add=True)  # Kayıt tarihi
 
+    def assignment_completion_percentage(self):
+        total_assignments = self.assignments.count()
+        completed_assignments = self.assignments.filter(is_completed=True).count()
+        if total_assignments == 0:
+            return 0
+        return (completed_assignments / total_assignments) * 100
+
+
+
     def __str__(self):
         return f"{self.name} {self.surname}"
+
+
+# Yeni Assignment (Ödev) Modeli
+class Assignment(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='assignments')  # Hangi öğrenciye ait
+    book = models.CharField(max_length=255)  # Ödev kitabı
+    topic = models.CharField(max_length=255)  # Ödev konusu
+    page = models.CharField(max_length=50)  # Ödev sayfası
+    is_completed = models.BooleanField(default=False)  # Yapıldı mı?
+    date_added = models.DateTimeField(auto_now_add=True)  # Ekleme tarihi
+
+    def __str__(self):
+        return f"{self.student.name} {self.student.surname} - {self.topic}"
